@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.amit.user.service.ValueObject.Department;
 import com.amit.user.service.ValueObject.ResponseTemplateVO;
+import com.amit.user.service.client.DepartmentClient;
 import com.amit.user.service.entity.User;
 import com.amit.user.service.repository.UserRepository;
 
@@ -16,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private DepartmentClient departmentClient;
 	
 	@Autowired
 	private RestTemplate restTemplate;
@@ -29,7 +33,8 @@ public class UserService {
 		log.info("Inside getUserWithDepartment method of user service");
 		ResponseTemplateVO vo = new ResponseTemplateVO();
 		User user = userRepository.findByUserId(userId);
-		Department department = restTemplate.getForObject("http://DEPARTMENT-SERVICE/departments/"+user.getDepartmentId(), Department.class);
+//		Department department = restTemplate.getForObject("http://DEPARTMENT-SERVICE/departments/"+user.getDepartmentId(), Department.class);
+		Department department = departmentClient.getDepartment(user.getDepartmentId());
 		vo.setUser(user);
 		vo.setDepartment(department);
 		return vo;
